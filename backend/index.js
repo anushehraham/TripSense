@@ -1,3 +1,6 @@
+const cors = require("cors");
+app.use(cors());
+
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -16,3 +19,10 @@ app.get('/', (req, res) => res.send('API Running'));
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
+
+
+
+const destinationRoutes = require('./routes/destinations');
+app.use('/api/destinations', destinationRoutes);
+
+

@@ -1,15 +1,23 @@
-import React from 'react';
-import Navbar from './components/navbar/navbar';
-import Home from './pages/Home.jsx';
+
+import React from "react";
+import Header from "./components/Header";
+import HeroSection from "./components/HeroSection";
+import "./App.css";
+
 
 function App() {
   return (
-    <>
-      <Navbar />
-      <Home />
-    </>
+    <div>
+      <Header />
+      <HeroSection />
+    </div>
   );
 }
 
+
 export default App;
+
+
+
+
 

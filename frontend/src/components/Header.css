@@ -1,0 +1,29 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: bold;
+  color: #fbfbfc;
+}
+
+nav a {
+  margin-left: 20px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.login {
+  color: white;
+}
+
+.signup {
+  background: #f65a3a;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+}

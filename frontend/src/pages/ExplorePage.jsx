@@ -30,8 +30,8 @@ const ExplorePage = () => {
               fontWeight: 500,
               transition: "background 0.2s"
             }}
-            onMouseOver={e => e.currentTarget.style.background = "#e24e2e"}
-            onMouseOut={e => e.currentTarget.style.background = "#f65a3a"}
+            onMouseOver={(e) => (e.currentTarget.style.background = "#e24e2e")}
+            onMouseOut={(e) => (e.currentTarget.style.background = "#f65a3a")}
           >
             {feature}
           </button>

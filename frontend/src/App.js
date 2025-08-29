@@ -10,6 +10,8 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/explore/:countryName" element={<ExplorePage />} />
         <Route path="/destination/:name" element={<DestinationPage />} />
+        {/* fallback route in case of wrong URL */}
+        <Route path="*" element={<h2 style={{ textAlign: "center", marginTop: "50px" }}>Page Not Found</h2>} />
       </Routes>
     </Router>
   );

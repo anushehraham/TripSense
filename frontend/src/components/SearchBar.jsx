@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./SearchBar.css";
 import { searchCountry } from "../api/countryapi";
+import CountryCard from "./CountryCard"; // import the styled card
 
 const SearchBar = () => {
   const [query, setQuery] = useState("");
@@ -12,22 +13,20 @@ const SearchBar = () => {
   };
 
   return (
-    <div className="search-bar">
-      <input
-        type="text"
-        placeholder="Search your destination"
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-      />
-      <button onClick={handleSearch}>Search</button>
+    <div className="search-container">
+      {/* Search box */}
+      <div className="search-bar">
+        <input
+          type="text"
+          placeholder="Search your destination"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+        />
+        <button onClick={handleSearch}>Search</button>
+      </div>
 
-      {result && (
-        <div className="search-result">
-          <h3>{result.name}</h3>
-          <p>{result.description}</p>
-          <img src={result.image} alt={result.name} />
-        </div>
-      )}
+      {/* Country description box beside search */}
+      {result && <CountryCard country={result} />}
     </div>
   );
 };

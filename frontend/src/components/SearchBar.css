@@ -25,3 +25,37 @@
 .search-bar button:hover {
   background: #e24e2e;
 }
+
+
+
+
+
+
+.search-container {
+  display: flex;
+  align-items: flex-start;  /* aligns top of search bar and card */
+  justify-content: center;
+  gap: 30px;                /* space between search bar & card */
+  margin-top: 20px;
+  flex-wrap: wrap;           /* ensures responsiveness on small screens */
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.country-card {
+  border: 1px solid #ccc;
+  padding: 15px;
+  border-radius: 8px;
+  max-width: 300px;
+  text-align: center;
+}
+
+.country-card img {
+  width: 100%;
+  border-radius: 5px;
+}
+

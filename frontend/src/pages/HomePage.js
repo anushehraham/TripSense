@@ -13,6 +13,7 @@ export default function HomePage() {
     }
   };
 
+
   return (
     <div className="homepage">
       <h1>TripSense</h1>

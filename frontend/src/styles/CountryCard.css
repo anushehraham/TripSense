@@ -1,0 +1,57 @@
+.country-card {
+  position: relative;
+  width: 320px;          /* fixed size (adjust if needed) */
+  height: 240px;
+  border-radius: 12px;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+  color: white;
+  display: flex;
+  align-items: center;       /* center text vertically */
+  justify-content: center;   /* center text horizontally */
+  text-align: center;
+}
+
+.country-card .overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35); /* makes text readable */
+}
+
+.country-card .content {
+  position: relative;
+  z-index: 1;
+  padding: 15px;
+}
+
+.country-card h2 {
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.country-card p {
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+
+.explore-btn {
+  padding: 10px 28px;
+  background: #f65a3a;
+  color: #fff;
+  border: none;
+  border-radius: 25px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-top: 12px;
+}
+
+.explore-btn:hover {
+  background: #e24e2e;
+}

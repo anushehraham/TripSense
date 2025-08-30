@@ -1,7 +1,10 @@
 import React from "react";
 import "../styles/CountryCard.css";
+import { useNavigate } from "react-router-dom";
 
-const CountryCard = ({ country, onExplore }) => {
+const CountryCard = ({ country }) => {
+  const navigate = useNavigate();
+
   return (
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
       <div
@@ -17,7 +20,7 @@ const CountryCard = ({ country, onExplore }) => {
       <button
         className="explore-btn"
         style={{ marginTop: 16 }}
-        onClick={() => onExplore && onExplore(country)}
+        onClick={() => navigate(`/country/${country.id}`)}
       >
         Explore
       </button>

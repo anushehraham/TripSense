@@ -10,12 +10,34 @@ const features = [
 ];
 
 const ExplorePage = () => {
-  const { countryName } = useParams();
+  const { country } = useParams();
+
+  // ✅ Convert slug (united-states) → "United States"
+  const formatCountryName = (slug) => {
+    if (!slug) return "";
+    return slug
+      .split("-") // ["united", "states"]
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1)) // capitalize each
+      .join(" "); // "United States"
+  };
+
+  const displayCountry = formatCountryName(country);
+
+  // Add console.log for debugging
+  console.log("ExplorePage rendered with country:", country, "displayCountry:", displayCountry);
 
   return (
     <div style={{ maxWidth: 400, margin: "40px auto", textAlign: "center" }}>
-      <h1>Explore {countryName}</h1>
-      <div style={{ display: "flex", flexDirection: "column", gap: 16, marginTop: 32 }}>
+      <h1>Explore {displayCountry}</h1>
+
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 16,
+          marginTop: 32
+        }}
+      >
         {features.map((feature) => (
           <button
             key={feature}

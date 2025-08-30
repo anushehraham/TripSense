@@ -3,14 +3,14 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 export default function HomePage() {
-  const [query, setQuery] = useState();
+  const [query, setQuery] = useState(""); // ✅ default empty string
   const [countries, setCountries] = useState([]);
   const navigate = useNavigate();
 
   const handleSearch = (e) => {
     e.preventDefault(); // prevent page reload
     if (query.trim()) {
-      navigate(`/destination/${query}`);
+      navigate(`/destination/${query.toLowerCase()}`); // ✅ safer URLs
     }
   };
 
@@ -21,11 +21,15 @@ export default function HomePage() {
       .catch((err) => console.error("Error fetching countries:", err));
   }, []);
 
+  // ✅ helper function to create clean URLs
+  const slugify = (name) =>
+    name.toLowerCase().replace(/\s+/g, "-"); // "United States" -> "united-states"
+
   return (
     <div className="homepage">
       <h1>TripSense</h1>
 
-      {/* Search bar (unchanged) */}
+      {/* Search bar */}
       <form onSubmit={handleSearch} className="search-bar">
         <input
           type="text"
@@ -41,7 +45,11 @@ export default function HomePage() {
         {countries.map((c) => (
           <button
             key={c._id}
-            onClick={() => navigate(`/explore/${c.name}`)}
+            onClick={() => {
+              const url = `/explore/${slugify(c.name)}`;
+              console.log("Navigating to:", url, "for country:", c.name);
+              navigate(url);
+            }}
             style={{
               margin: "10px",
               padding: "12px 24px",

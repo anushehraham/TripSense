@@ -104,6 +104,10 @@ const ExplorePage = () => {
               onClick={() => {
                 if (feature === "Travel Guide") {
                   navigate(`/explore/${country}/travel-guide`);
+                } else if (feature === "Trip Planner") {
+                  navigate(`/explore/${country}/trip-planner`);
+                } else if (feature === "Budget Estimator") {
+                  navigate(`/explore/${country}/budget-estimator`);
                 } else {
                   console.log(`Feature clicked: ${feature}`);
                   alert(`You selected: ${feature}`);

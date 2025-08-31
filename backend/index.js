@@ -2,7 +2,11 @@ import express from "express";
 import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 import countryRoutes from "./routes/countryRoutes.js";
+import attractionsRoutes from "./routes/attractionsRoutes.js";
+import foodRoutes from "./routes/foodRoutes.js";
 import cors from "cors";
+import path from "path";
+import { fileURLToPath } from "url";
 
 dotenv.config();
 connectDB();
@@ -19,8 +23,25 @@ app.use(cors({
 // Middleware to parse JSON
 app.use(express.json());
 
+// ✅ Add cache-busting headers for images
+app.use((req, res, next) => {
+  if (req.path.match(/\.(jpg|jpeg|png|gif|webp)$/)) {
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+  }
+  next();
+});
+
+// ✅ Serve static files (images) from uploads folder
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 // Routes
 app.use("/api/countries", countryRoutes);
+app.use("/api/attractions", attractionsRoutes);
+app.use("/api/foods", foodRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

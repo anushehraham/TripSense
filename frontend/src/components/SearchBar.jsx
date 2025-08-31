@@ -8,7 +8,9 @@ const SearchBar = () => {
   const [result, setResult] = useState(null);
 
   const handleSearch = async () => {
+    console.log("Searching for:", query);
     const data = await searchCountry(query);
+    console.log("Search result:", data);
     setResult(data);
   };
 

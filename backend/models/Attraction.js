@@ -1,72 +1,46 @@
 import mongoose from "mongoose";
 
 const attractionSchema = new mongoose.Schema({
-  countries: [{
-    name: { 
-      type: String, 
-      required: true 
-    },
-    slug: { 
-      type: String, 
-      required: true 
-    },
-    attractions: [{
-      title: { 
-        type: String, 
-        required: true 
-      },
-      city: { 
-        type: String 
-      },
-      description: { 
-        type: String, 
-        required: true 
-      },
-      image: { 
-        type: String, 
-        required: true 
-      },
-      rating: { 
-        type: Number, 
-        min: 0, 
-        max: 5, 
-        default: 4.5 
-      },
-      bestTime: { 
-        type: String, 
-        default: "All day"
-      },
-      tips: { 
-        type: String, 
-        default: "Visit during off-peak hours for better experience"
-      },
-      location: { 
-        type: String 
-      },
-      category: { 
-        type: String 
-      },
-      price: { 
-        type: String 
-      },
-      openingHours: { 
-        type: String 
-      },
-      contact: { 
-        type: String 
-      },
-      website: { 
-        type: String 
-      }
-    }]
-  }]
+  country: { 
+    type: String, 
+    required: true 
+  },
+  name: { 
+    type: String, 
+    required: true 
+  },
+  description: { 
+    type: String, 
+    required: true 
+  },
+  rating: { 
+    type: Number, 
+    min: 0, 
+    max: 5, 
+    default: 4.5 
+  },
+  city: { 
+    type: String 
+  },
+  tip: { 
+    type: String 
+  },
+  location: { 
+    type: String 
+  },
+  image: { 
+    type: String, 
+    required: true 
+  }
 }, { 
   collection: "attractions", 
   timestamps: true 
 });
 
-// Create index for faster country name searches within the countries array
-attractionSchema.index({ "countries.name": 1 });
+// Create indexes for faster searches
+attractionSchema.index({ country: 1 });
+attractionSchema.index({ city: 1 });
+attractionSchema.index({ rating: -1 });
 
 const Attraction = mongoose.model("Attraction", attractionSchema);
 

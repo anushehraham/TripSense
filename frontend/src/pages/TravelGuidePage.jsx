@@ -30,22 +30,17 @@ const TravelGuidePage = () => {
     {
       name: "Best Time to Go",
       icon: "📅",
-      route: "best-time"
+      route: "besttime"
     },
     {
       name: "Local Language",
       icon: "🗣️",
-      route: "language"
+      route: "localphrase"
     },
     {
       name: "Culture",
       icon: "🎭",
       route: "culture"
-    },
-    {
-      name: "Tips",
-      icon: "💡",
-      route: "tips"
     }
   ];
 

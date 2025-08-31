@@ -30,8 +30,6 @@ const AttractionsPage = () => {
         // Fetch from your MongoDB attractions collection
         const response = await axios.get(`http://localhost:5000/api/attractions/country/${country}`);
         console.log("Attractions data received:", response.data);
-        console.log("Data type:", typeof response.data);
-        console.log("Data length:", response.data?.length);
         
         if (response.data && Array.isArray(response.data) && response.data.length > 0) {
           setAttractions(response.data);
@@ -137,21 +135,6 @@ const AttractionsPage = () => {
           Discover the most amazing places to visit in {displayCountry}!
         </p>
 
-        {/* Debug Info - Remove this later */}
-        <div style={{ 
-          backgroundColor: "#e3f2fd",
-          padding: "15px",
-          borderRadius: "10px",
-          marginBottom: "30px",
-          textAlign: "left"
-        }}>
-          <h4 style={{ margin: "0 0 10px 0", color: "#1976d2" }}>🔍 Debug Info:</h4>
-          <p style={{ margin: "5px 0", fontSize: "14px" }}>Country: {country}</p>
-          <p style={{ margin: "5px 0", fontSize: "14px" }}>Display Country: {displayCountry}</p>
-          <p style={{ margin: "5px 0", fontSize: "14px" }}>Attractions Count: {attractions.length}</p>
-          <p style={{ margin: "5px 0", fontSize: "14px" }}>Attractions Data: {JSON.stringify(attractions, null, 2)}</p>
-        </div>
-
         {error && (
           <div style={{ 
             backgroundColor: "#ffebee",
@@ -193,7 +176,7 @@ const AttractionsPage = () => {
               >
                 <img
                   src={attraction.image || "https://via.placeholder.com/300x200?text=No+Image"}
-                  alt={attraction.name || attraction.title || "Attraction"}
+                  alt={attraction.name || "Attraction"}
                   style={{
                     width: "100%",
                     height: "200px",
@@ -211,7 +194,7 @@ const AttractionsPage = () => {
                   fontSize: "1.3rem",
                   fontWeight: "600"
                 }}>
-                  {attraction.name || attraction.title || "Unknown Attraction"}
+                  {attraction.name || "Unknown Attraction"}
                 </h3>
                 <p style={{ 
                   color: "#7f8c8d", 
@@ -249,7 +232,7 @@ const AttractionsPage = () => {
                   )}
                 </div>
                 
-                {attraction.tips && (
+                {attraction.tip && (
                   <div style={{ 
                     backgroundColor: "#f8f9fa",
                     padding: "10px",
@@ -257,7 +240,7 @@ const AttractionsPage = () => {
                     fontSize: "0.9rem",
                     color: "#495057"
                   }}>
-                    <strong>💡 Tip:</strong> {attraction.tips}
+                    <strong>💡 Tip:</strong> {attraction.tip}
                   </div>
                 )}
                 

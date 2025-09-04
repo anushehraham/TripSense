@@ -10,6 +10,8 @@ import cultureRoutes from "./routes/cultureRoutes.js";
 import signupRoutes from "./routes/signupRoutes.js";
 import packlistRoutes from "./routes/packlistRoutes.js";
 import emergencyRoutes from "./routes/emergencyRoutes.js";
+import reviewRoutes from "./routes/reviewRoutes.js";
+import funFactRoutes from "./routes/funFactRoutes.js";
 import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -54,6 +56,8 @@ app.use("/api/culture", cultureRoutes);
 app.use("/api/signup", signupRoutes);
 app.use("/api/packlist", packlistRoutes);
 app.use("/api/emergency", emergencyRoutes);
+app.use("/api/reviews", reviewRoutes);
+app.use("/api/funfacts", funFactRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

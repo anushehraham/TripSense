@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import FunFactModal from "../components/FunFactModal";
 import axios from "axios";
 
 const ExplorePage = () => {
@@ -7,6 +8,7 @@ const ExplorePage = () => {
   const navigate = useNavigate();
   
   const [showEmergencyModal, setShowEmergencyModal] = useState(false);
+  const [showFunFactModal, setShowFunFactModal] = useState(false);
   const [emergencyData, setEmergencyData] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -131,7 +133,7 @@ const ExplorePage = () => {
             Choose Your Adventure With Us!!
           </h3>
           
-          {["Travel Guide", "Trip Planner", "Budget Estimator", "Packlist", "Emergency", "Review"].map((feature, index) => (
+          {["Travel Guide", "Trip Planner", "Budget Estimator", "Packlist", "Fun Fact", "Emergency", "Review"].map((feature, index) => (
             <button
               key={index}
               style={{
@@ -170,8 +172,12 @@ const ExplorePage = () => {
                   navigate(`/explore/${country}/budget-estimator`);
                 } else if (feature === "Packlist") {
                   navigate(`/explore/${country}/packlist`);
+                } else if (feature === "Fun Fact") {
+                  setShowFunFactModal(true);
                 } else if (feature === "Emergency") {
                   handleEmergencyClick();
+                } else if (feature === "Review") {
+                  navigate(`/explore/${country}/review`);
                 } else {
                   console.log(`Feature clicked: ${feature}`);
                   alert(`You selected: ${feature}`);
@@ -331,6 +337,13 @@ const ExplorePage = () => {
           </div>
         </div>
       )}
+
+      {/* Fun Fact Modal */}
+      <FunFactModal 
+        isOpen={showFunFactModal}
+        onClose={() => setShowFunFactModal(false)}
+        country={country}
+      />
     </div>
   );
 };

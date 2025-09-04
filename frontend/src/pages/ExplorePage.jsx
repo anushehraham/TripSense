@@ -1,9 +1,14 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const ExplorePage = () => {
   const { country } = useParams();
   const navigate = useNavigate();
+  
+  const [showEmergencyModal, setShowEmergencyModal] = useState(false);
+  const [emergencyData, setEmergencyData] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   // ✅ Convert slug (united-states) → "United States"
   const formatCountryName = (slug) => {
@@ -15,6 +20,61 @@ const ExplorePage = () => {
   };
 
   const displayCountry = formatCountryName(country);
+
+  // Function to fetch emergency data
+  const fetchEmergencyData = async () => {
+    try {
+      setLoading(true);
+      console.log('Fetching emergency data for:', displayCountry);
+      
+      // Try different country name formats
+      const countryVariations = [
+        displayCountry, // "France"
+        displayCountry.toLowerCase(), // "france"
+        displayCountry.toUpperCase(), // "FRANCE"
+        country, // original slug "france"
+        country.charAt(0).toUpperCase() + country.slice(1) // "France" from "france"
+      ];
+      
+      let emergencyInfo = null;
+      
+      for (const countryName of countryVariations) {
+        try {
+          console.log('Trying country name:', countryName);
+          const response = await axios.get(`http://localhost:5000/api/emergency/country/${countryName}`);
+          console.log('API response for', countryName, ':', response.data);
+          
+          if (response.data.success && response.data.data) {
+            emergencyInfo = response.data.data;
+            console.log('Found emergency data for:', countryName);
+            break;
+          }
+        } catch (err) {
+          console.log('No data for:', countryName);
+        }
+      }
+      
+      if (emergencyInfo) {
+        setEmergencyData(emergencyInfo);
+        console.log('Emergency data set:', emergencyInfo);
+      } else {
+        console.log('No emergency data found for any variation');
+      }
+    } catch (error) {
+      console.error('Error fetching emergency data:', error);
+      console.error('Error details:', error.response?.data || error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Function to handle emergency button click
+  const handleEmergencyClick = () => {
+    setShowEmergencyModal(true);
+    if (!emergencyData) {
+      fetchEmergencyData();
+    }
+  };
 
   return (
     <div style={{ 
@@ -71,7 +131,7 @@ const ExplorePage = () => {
             Choose Your Adventure With Us!!
           </h3>
           
-          {["Travel Guide", "Trip Planner", "Budget Estimator", "Real-time Update", "Review"].map((feature, index) => (
+          {["Travel Guide", "Trip Planner", "Budget Estimator", "Packlist", "Emergency", "Review"].map((feature, index) => (
             <button
               key={index}
               style={{
@@ -108,6 +168,10 @@ const ExplorePage = () => {
                   navigate(`/explore/${country}/trip-planner`);
                 } else if (feature === "Budget Estimator") {
                   navigate(`/explore/${country}/budget-estimator`);
+                } else if (feature === "Packlist") {
+                  navigate(`/explore/${country}/packlist`);
+                } else if (feature === "Emergency") {
+                  handleEmergencyClick();
                 } else {
                   console.log(`Feature clicked: ${feature}`);
                   alert(`You selected: ${feature}`);
@@ -119,6 +183,154 @@ const ExplorePage = () => {
           ))}
         </div>
       </div>
+
+      {/* Emergency Modal */}
+      {showEmergencyModal && (
+        <div style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: "100vw",
+          height: "100vh",
+          backgroundColor: "rgba(0, 0, 0, 0.7)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 1000
+        }}>
+          <div style={{
+            backgroundColor: "white",
+            borderRadius: "20px",
+            padding: "30px",
+            maxWidth: "500px",
+            width: "90%",
+            maxHeight: "80vh",
+            overflow: "auto",
+            position: "relative"
+          }}>
+            <button
+              onClick={() => setShowEmergencyModal(false)}
+              style={{
+                position: "absolute",
+                top: "15px",
+                right: "15px",
+                background: "none",
+                border: "none",
+                fontSize: "24px",
+                cursor: "pointer",
+                color: "#666"
+              }}
+            >
+              ×
+            </button>
+            
+            <h2 style={{ 
+              color: "#e74c3c", 
+              marginBottom: "20px",
+              fontSize: "1.8rem",
+              textAlign: "center"
+            }}>
+              🚨 Emergency Contacts for {displayCountry}
+            </h2>
+
+            {loading ? (
+              <div style={{ textAlign: "center", padding: "20px" }}>
+                <p>Loading emergency information...</p>
+              </div>
+            ) : emergencyData ? (
+              <div>
+                <div style={{ marginBottom: "20px" }}>
+                  <h3 style={{ color: "#2c3e50", marginBottom: "10px" }}>Emergency Numbers:</h3>
+                  <div style={{ display: "grid", gap: "10px" }}>
+                    <div style={{ 
+                      padding: "10px", 
+                      backgroundColor: "#f8f9fa", 
+                      borderRadius: "8px",
+                      border: "1px solid #e9ecef"
+                    }}>
+                      <strong>🚔 Police:</strong> {emergencyData.emergencyNumbers.police}
+                    </div>
+                    <div style={{ 
+                      padding: "10px", 
+                      backgroundColor: "#f8f9fa", 
+                      borderRadius: "8px",
+                      border: "1px solid #e9ecef"
+                    }}>
+                      <strong>🚑 Ambulance:</strong> {emergencyData.emergencyNumbers.ambulance}
+                    </div>
+                    <div style={{ 
+                      padding: "10px", 
+                      backgroundColor: "#f8f9fa", 
+                      borderRadius: "8px",
+                      border: "1px solid #e9ecef"
+                    }}>
+                      <strong>🚒 Fire:</strong> {emergencyData.emergencyNumbers.fire}
+                    </div>
+                    <div style={{ 
+                      padding: "10px", 
+                      backgroundColor: "#f8f9fa", 
+                      borderRadius: "8px",
+                      border: "1px solid #e9ecef"
+                    }}>
+                      <strong>📞 General Emergency:</strong> {emergencyData.emergencyNumbers.general}
+                    </div>
+                  </div>
+                </div>
+
+                {emergencyData.embassy && (
+                  <div style={{ marginBottom: "20px" }}>
+                    <h3 style={{ color: "#2c3e50", marginBottom: "10px" }}>Embassy Information:</h3>
+                    <div style={{ 
+                      padding: "15px", 
+                      backgroundColor: "#e8f4fd", 
+                      borderRadius: "8px",
+                      border: "1px solid #bee5eb"
+                    }}>
+                      {emergencyData.embassy.address && <p><strong>Address:</strong> {emergencyData.embassy.address}</p>}
+                      {emergencyData.embassy.phone && <p><strong>Phone:</strong> {emergencyData.embassy.phone}</p>}
+                      {emergencyData.embassy.email && <p><strong>Email:</strong> {emergencyData.embassy.email}</p>}
+                    </div>
+                  </div>
+                )}
+
+                {emergencyData.hospitals && emergencyData.hospitals.length > 0 && (
+                  <div style={{ marginBottom: "20px" }}>
+                    <h3 style={{ color: "#2c3e50", marginBottom: "10px" }}>Hospitals:</h3>
+                    {emergencyData.hospitals.map((hospital, index) => (
+                      <div key={index} style={{ 
+                        padding: "10px", 
+                        backgroundColor: "#f8f9fa", 
+                        borderRadius: "8px",
+                        border: "1px solid #e9ecef",
+                        marginBottom: "8px"
+                      }}>
+                        <strong>{hospital.name}</strong>
+                        {hospital.address && <p style={{ margin: "5px 0", fontSize: "0.9rem" }}>{hospital.address}</p>}
+                        {hospital.phone && <p style={{ margin: "5px 0", fontSize: "0.9rem" }}>📞 {hospital.phone}</p>}
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {emergencyData.tips && emergencyData.tips.length > 0 && (
+                  <div>
+                    <h3 style={{ color: "#2c3e50", marginBottom: "10px" }}>Safety Tips:</h3>
+                    <ul style={{ paddingLeft: "20px" }}>
+                      {emergencyData.tips.map((tip, index) => (
+                        <li key={index} style={{ marginBottom: "5px", fontSize: "0.9rem" }}>{tip}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div style={{ textAlign: "center", padding: "20px" }}>
+                <p>No emergency information available for {displayCountry}</p>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

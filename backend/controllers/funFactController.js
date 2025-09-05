@@ -1,10 +1,16 @@
 import FunFact from '../models/FunFact.js';
 
+// Helper to safely extract the fun fact text supporting both 'funFact' and legacy 'funfact' field names
+const extractFunFactText = (doc) => {
+  if (!doc) return undefined;
+  return doc.funFact || doc.funfact || doc.fun_fact || doc.text; // fallbacks just in case
+};
+
 // Get a random fun fact for a specific country
 export const getRandomFunFact = async (req, res) => {
   try {
     const { country } = req.params;
-    
+
     if (!country) {
       return res.status(400).json({
         success: false,
@@ -12,25 +18,36 @@ export const getRandomFunFact = async (req, res) => {
       });
     }
 
-    // Normalize country name for better matching
-    const normalizedCountry = country.charAt(0).toUpperCase() + country.slice(1).toLowerCase();
+    // Support slugs like 'united-states' or 'south_korea'
+    const slugDecoded = decodeURIComponent(country)
+      .replace(/[-_]+/g, ' ')
+      .replace(/\s{2,}/g, ' ')
+      .trim();
+
+    const toTitleCase = (str) => str.split(' ').map(w => w ? w.charAt(0).toUpperCase() + w.slice(1).toLowerCase() : '').join(' ');
+    const normalizedCountry = toTitleCase(slugDecoded);
     
-    // Get all fun facts for the country
-    const funFacts = await FunFact.find({ country: normalizedCountry });
+  // Case–insensitive match for country (handles DB variations like 'japan', 'JAPAN', etc.)
+    let funFacts = await FunFact.find({ country: { $regex: `^${normalizedCountry}$`, $options: 'i' } }).lean();
+
+    if (funFacts.length === 0) {
+      // Try raw param as-is
+      funFacts = await FunFact.find({ country: { $regex: `^${country}$`, $options: 'i' } }).lean();
+    }
     
     if (funFacts.length === 0) {
       // Try alternative country name variations
       const alternativeNames = getAlternativeCountryNames(normalizedCountry);
       
-      for (const altName of alternativeNames) {
-        const altFacts = await FunFact.find({ country: altName });
+  for (const altName of alternativeNames) {
+    const altFacts = await FunFact.find({ country: { $regex: `^${altName}$`, $options: 'i' } }).lean();
         if (altFacts.length > 0) {
           const randomIndex = Math.floor(Math.random() * altFacts.length);
           return res.status(200).json({
             success: true,
             data: {
               country: altName,
-              funFact: altFacts[randomIndex].funFact
+      funFact: extractFunFactText(altFacts[randomIndex])
             }
           });
         }
@@ -44,13 +61,13 @@ export const getRandomFunFact = async (req, res) => {
 
     // Get a random fun fact
     const randomIndex = Math.floor(Math.random() * funFacts.length);
-    const randomFunFact = funFacts[randomIndex];
+  const randomFunFact = funFacts[randomIndex];
 
     res.status(200).json({
       success: true,
       data: {
         country: randomFunFact.country,
-        funFact: randomFunFact.funFact
+        funFact: extractFunFactText(randomFunFact)
       }
     });
 
@@ -68,21 +85,34 @@ export const getRandomFunFact = async (req, res) => {
 export const getAllFunFacts = async (req, res) => {
   try {
     const { country } = req.params;
-    
+
     if (!country) {
       return res.status(400).json({
         success: false,
         message: 'Country parameter is required'
       });
     }
+    const slugDecoded = decodeURIComponent(country)
+      .replace(/[-_]+/g, ' ')
+      .replace(/\s{2,}/g, ' ')
+      .trim();
+    const toTitleCase = (str) => str.split(' ').map(w => w ? w.charAt(0).toUpperCase() + w.slice(1).toLowerCase() : '').join(' ');
+    const normalizedCountry = toTitleCase(slugDecoded);
+    let funFacts = await FunFact.find({ country: { $regex: `^${normalizedCountry}$`, $options: 'i' } }).lean();
+    if (funFacts.length === 0) {
+      funFacts = await FunFact.find({ country: { $regex: `^${country}$`, $options: 'i' } }).lean();
+    }
 
-    const normalizedCountry = country.charAt(0).toUpperCase() + country.slice(1).toLowerCase();
-    const funFacts = await FunFact.find({ country: normalizedCountry });
+    const cleaned = funFacts.map(f => ({
+      _id: f._id,
+      country: f.country,
+      funFact: extractFunFactText(f)
+    }));
 
     res.status(200).json({
       success: true,
-      data: funFacts,
-      count: funFacts.length
+      data: cleaned,
+      count: cleaned.length
     });
 
   } catch (error) {

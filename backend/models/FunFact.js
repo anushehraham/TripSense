@@ -12,7 +12,9 @@ const funFactSchema = new mongoose.Schema({
     trim: true
   }
 }, {
-  timestamps: true
+  timestamps: true,
+  // Explicit collection name to match your existing Mongo collection (singular 'funfact')
+  collection: 'funfact'
 });
 
 // Index for efficient queries

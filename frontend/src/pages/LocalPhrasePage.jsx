@@ -281,30 +281,7 @@ const LocalPhrasePage = () => {
                   </div>
                 )}
 
-                {/* Practice Button */}
-                <button
-                  style={{
-                    width: "100%",
-                    padding: "12px",
-                    backgroundColor: "#667eea",
-                    color: "white",
-                    border: "none",
-                    borderRadius: "10px",
-                    fontSize: "14px",
-                    fontWeight: "500",
-                    cursor: "pointer",
-                    transition: "background 0.3s ease",
-                    marginTop: "10px"
-                  }}
-                  onMouseOver={(e) => e.currentTarget.style.background = "#5a6fd8"}
-                  onMouseOut={(e) => e.currentTarget.style.background = "#667eea"}
-                  onClick={() => {
-                    // You can add pronunciation or practice functionality here
-                    alert(`Practice saying: ${phrase.phrase}`);
-                  }}
-                >
-                  🎯 Practice This Phrase
-                </button>
+                {/* Practice button removed per request */}
               </div>
             ))}
           </div>
